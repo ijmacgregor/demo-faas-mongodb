@@ -4,12 +4,14 @@
 		<pages>
 			<Page title="{i18n>title}">
 				<content>
-					<Table items="{/products}" sticky="ColumnHeaders,HeaderToolbar">
+					<Table items="{/products}" sticky="ColumnHeaders,HeaderToolbar" busy="{/busy}" busyIndicatorDelay="200">
 						<headerToolbar>
 							<Toolbar>
 								<Title text="Products" />
 								<ToolbarSpacer />
-								<Button icon="sap-icon://add" text="Add product" press="onAddProduct" />
+								<Button icon="sap-icon://create" text="Create product" press="onAddProduct" />
+								<ToolbarSeparator />
+								<Button icon="sap-icon://refresh" tooltip="Refresh" press=".readData" />
 							</Toolbar>
 						</headerToolbar>
 						<columns>

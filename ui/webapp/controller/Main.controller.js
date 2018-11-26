@@ -4,11 +4,12 @@ sap.ui.define([
 	"sap/m/Dialog",
 	"sap/m/Button",
 	"sap/m/Input",
-	"sap/m/MessageToast"
-], function (Controller, JSONModel, Dialog, Button, Input, MessageToast) {
+	"sap/m/MessageToast",
+	"sap/m/MessageBox"
+], function (Controller, JSONModel, Dialog, Button, Input, MessageToast, MessageBox) {
 	"use strict";
 	
-	const REST_API_URI = "https://1fd725ad-6261-4485-a133-4928fe151463.ingress.live-us10.faas-live.shoot.live.k8s-hana.ondemand.com/fx/";
+	const REST_API_URI = "https://1fd725ad-6261-4485-a133-4928fe151463.ingress.live-us10.faas-live.shoot.live.k8s-hana.ondemand.com/productservice/";
 	
 	return Controller.extend("com.poit.faas-ui.controller.Main", {
 		onInit: function(){
@@ -30,13 +31,22 @@ sap.ui.define([
 			return this.getView().getModel(sModel);
 		},
 
+		setBusy: function(bBusy){
+			this.getModel().setProperty("/busy",bBusy);
+		},
+
 		readData: function(){
+			this.setBusy(true);
 			return jQuery.get(REST_API_URI).done(function(aProducts){
 				this.getModel().setProperty("/products",aProducts);
+			}.bind(this)).always(function(){
+				this.setBusy(false);
 			}.bind(this));
 		},
 		
 		createProduct: function(sProductName){
+			this.setBusy(true);
+
 			jQuery.ajax({
 				method: "POST",
 				url: REST_API_URI, 
@@ -48,6 +58,9 @@ sap.ui.define([
 				this.readData().then(function(){
 					MessageToast.show("Product " + oResponse.productId + " created", { width: "auto" } );
 				});
+			}.bind(this)).fail(function(){
+				MessageBox.error("Failed to create product");
+				this.setBusy(false);
 			}.bind(this));
 		},
 		
@@ -56,7 +69,8 @@ sap.ui.define([
 				this._oAddDialog = new Dialog({
 					title		: "Add product",
 					content     : [new Input({
-						value: "{/productDescription}"
+						value: "{/productDescription}",
+						placeholder: "Enter product name"
 					})],
 					beginButton: new Button({
 						text: "Create",
