@@ -1,8 +1,11 @@
 sap.ui.define([
 	"sap/ui/core/mvc/Controller",
 	"sap/ui/model/json/JSONModel",
+	"sap/m/Dialog",
+	"sap/m/Button",
+	"sap/m/Input",
 	"sap/m/MessageToast"
-], function (Controller, JSONModel, MessageToast) {
+], function (Controller, JSONModel, Dialog, Button, Input, MessageToast) {
 	"use strict";
 	
 	const REST_API_URI = "https://1fd725ad-6261-4485-a133-4928fe151463.ingress.live-us10.faas-live.shoot.live.k8s-hana.ondemand.com/fx/";
@@ -10,7 +13,8 @@ sap.ui.define([
 	return Controller.extend("com.poit.faas-ui.controller.Main", {
 		onInit: function(){
 			var oModel = new JSONModel({
-				products: []
+				products: [],
+				productDescription: null
 			});
 			
 			oModel.setSizeLimit(1000);
@@ -22,9 +26,13 @@ sap.ui.define([
 			this.getOwnerComponent().getRouter().getRoute("RouteMain").attachMatched(this.readData,this);
 		},
 		
+		getModel: function(sModel){
+			return this.getView().getModel(sModel);
+		},
+
 		readData: function(){
 			return jQuery.get(REST_API_URI).done(function(aProducts){
-				this.getView().getModel().setProperty("/products",aProducts);
+				this.getModel().setProperty("/products",aProducts);
 			}.bind(this));
 		},
 		
@@ -44,7 +52,36 @@ sap.ui.define([
 		},
 		
 		onAddProduct: function(oEvent){
-			this.createProduct("New  asdfasdf aaa product");
+			if(!this._oAddDialog){
+				this._oAddDialog = new Dialog({
+					title		: "Add product",
+					content     : [new Input({
+						value: "{/productDescription}"
+					})],
+					beginButton: new Button({
+						text: "Create",
+						type: sap.m.ButtonType.Emphasized,
+						press: function(){
+							var sProductDescription = this.getModel().getProperty("/productDescription");
+							this._oAddDialog.close();
+							this.createProduct(sProductDescription);
+						}.bind(this)
+					}),
+					endButton: new Button({
+						text: "Cancel",
+						press: function(){
+							this._oAddDialog.close();
+						}.bind(this)
+					}),
+					afterClose: function(){
+						this.getModel().setProperty("/productDescription",null);
+					}.bind(this)
+				}).addStyleClass("sapUiContentPadding");
+
+				this.getView().addDependent(this._oAddDialog);
+			}
+
+			this._oAddDialog.open();
 		}
 	});
 });
