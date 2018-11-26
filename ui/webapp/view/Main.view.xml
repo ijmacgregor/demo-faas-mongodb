@@ -1,0 +1,40 @@
+<mvc:View controllerName="com.poit.faas-ui.controller.Main" xmlns:html="http://www.w3.org/1999/xhtml" xmlns:mvc="sap.ui.core.mvc"
+	displayBlock="true" xmlns="sap.m">
+	<App id="idAppControl">
+		<pages>
+			<Page title="{i18n>title}">
+				<content>
+					<Table items="{/products}" sticky="ColumnHeaders,HeaderToolbar">
+						<headerToolbar>
+							<Toolbar>
+								<Title text="Products" />
+								<ToolbarSpacer />
+								<Button icon="sap-icon://add" text="Add product" press="onAddProduct" />
+							</Toolbar>
+						</headerToolbar>
+						<columns>
+							<Column>
+								<header>
+									<Label text="Product ID" />
+								</header>
+							</Column>
+							<Column>
+								<header>
+									<Label text="Name" />
+								</header>
+							</Column>
+						</columns>
+						<items>
+							<ColumnListItem>
+								<cells>
+									<Text text="{_id}" />
+									<Text text="{productName}" />
+								</cells>
+							</ColumnListItem>
+						</items>
+					</Table>
+				</content>
+			</Page>
+		</pages>
+	</App>
+</mvc:View>

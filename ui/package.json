@@ -1,0 +1,22 @@
+{
+  "name": "ui",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@openui5/sap.f": "^1.58.3",
+    "@openui5/sap.m": "^1.58.3",
+    "@openui5/sap.tnt": "^1.58.3",
+    "@openui5/sap.ui.core": "^1.58.3",
+    "@openui5/sap.ui.layout": "^1.58.3",
+    "@openui5/sap.ui.support": "^1.58.3",
+    "@openui5/sap.ui.unified": "^1.58.3",
+    "@openui5/themelib_sap_belize": "^1.58.3"
+  }
+}
